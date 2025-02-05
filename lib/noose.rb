@@ -19,11 +19,11 @@ class Noose
   end
 
   def show
-    draw ->(str) { puts str.black.on_white.bold }
+    draw { |str| str.black.on_white.bold }
   end
 
   def failure
-    draw ->(str) { puts str.white.on_red.bold }
+    draw { |str| str.white.on_red.bold }
     puts 'Bad luck! You failed!'.red.bold
   end
 
@@ -39,9 +39,9 @@ class Noose
 
   private
 
-  def draw(proc)
+  def draw
     puts
-    rows.each { |str| proc.call(str) }
+    rows.each { |row| puts yield row }
     puts
   end
 

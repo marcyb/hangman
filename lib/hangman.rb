@@ -22,7 +22,7 @@ class Hangman
 
   def turn
     @noose.show
-    menu
+    turn_menu
     @noose.lose_life unless @solution.guess
   end
 
@@ -55,19 +55,19 @@ class Hangman
     quit
   end
 
-  def menu
+  def turn_menu
     puts "\nMENU\n1 - Save & Quit\n2 - Guess a letter"
     return unless gets.chomp == '1'
 
-    save_and_quit
+    save
+    quit
   end
 
-  def save_and_quit
+  def save
     File.open('saved.dat', 'w') do |file|
       file.print JSON.pretty_generate(to_hash)
     end
     puts "\nGame saved".green
-    quit
   end
 
   def quit

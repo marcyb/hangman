@@ -18,14 +18,7 @@ class Solution < SimpleDelegator
 
   def guess
     @guesses << letter_input
-    found = @word.include?(@guesses[-1])
-    if found
-      puts "\nWell done, the word contains the letter '#{@guesses[-1]}'!\n"
-    else
-      puts "\nSorry, the word does not contain the letter '#{@guesses[-1]}'\n"
-    end
-    refresh
-    found
+    found?
   end
 
   def solved?
@@ -33,13 +26,11 @@ class Solution < SimpleDelegator
   end
 
   def success
-    puts "\nCONGRATULATIONS!! The word was: #{@word.center(@word.length + 2).black.on_green.bold}"
-    puts
+    reveal('CONGRATULATIONS!!') { |str| str.center(str.length + 2).black.on_green.bold }
   end
 
   def failure
-    puts "The word was: #{@word.white.on_red.bold}"
-    puts
+    reveal { |str| str.white.on_red.bold }
   end
 
   def to_hash
@@ -81,6 +72,17 @@ class Solution < SimpleDelegator
     end
   end
 
+  def found?
+    @word.include?(@guesses[-1]).tap do |found|
+      if found
+        puts "\nWell done, the word contains the letter '#{@guesses[-1]}'!\n"
+      else
+        puts "\nSorry, the word does not contain the letter '#{@guesses[-1]}'\n"
+      end
+      refresh
+    end
+  end
+
   def update
     @word.chars.each_with_index do |char, i|
       self[i] = char if @guesses.include?(char)
@@ -89,5 +91,10 @@ class Solution < SimpleDelegator
 
   def display
     puts "\n#{join(' ').center((length * 2) + 3).magenta.on_white.bold}"
+  end
+
+  def reveal(prefix = '')
+    puts %(#{"\n#{prefix} "}The word was: #{yield @word})
+    puts
   end
 end
